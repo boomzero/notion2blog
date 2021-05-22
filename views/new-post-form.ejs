@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <style>
+    /* FIREFOX FIX OF UGLY SELECT BOXES */
+    @supports (-moz-appearance:none) {
+
+      SELECT {
+        -moz-appearance: none !important;
+        background: transparent url('data:image/gif;base64,R0lGODlhBgAGAKEDAFVVVX9/f9TU1CgmNyH5BAEKAAMALAAAAAAGAAYAAAIODA4hCDKWxlhNvmCnGwUAOw==') right center no-repeat !important;
+        background-position: calc(100% - 5px) center !important;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="d-flex justify-content-center">
+    <%= title %>
+  </h1>
+  <br>
+  <div class="container d-flex justify-content-center">
+    <div class="row">
+      <form class="center-block" action="/posts/new" method="POST">
+        <div class="form-group">
+          <label for="inputTitle">Title</label>
+          <input type="text" name="title" class="form-control" id="inputTitle" placeholder="Your post title" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="inputAuthorName">Author</label>
+            <input type="text" name="authorName" class="form-control" id="inputAuthorName" placeholder="Your name">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAuthorEmail">Email</label>
+            <input type="email" name="authorEmail" class="form-control" id="inputAuthorEmail"
+              placeholder="Your email address">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputPrivacy">Privacy</label>
+            <select id="inputPrivacy" name="privacy" class="form-control form-select">
+              <option selected>private</option>
+              <option>public</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputContent">Content</label>
+          <textarea name="content" class="form-control" id="inputContent" rows="10"
+            placeholder="Enter your content in Markdown ..."></textarea>
+        </div>
+        <div class="form-row">
+        </div>
+        <div class="form-row d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
