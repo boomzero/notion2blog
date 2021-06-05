@@ -3,7 +3,7 @@ const PostService = require('../services/PostService');
 module.exports = class Post {
   static async apiGetAllPosts(req, res, next) {
     const posts = await PostService.getAllPosts();
-    return res.render('posts', { 'title': posts[0].title, 'content': posts[0].content });
+    return res.render('posts', { 'title': 'Everything...', 'posts': posts });
     // return res.send(posts[0].content);
   }
 
@@ -22,10 +22,10 @@ module.exports = class Post {
     const post = req.body
     console.log(post);
     if (post.title == '' || post.content == '') {
-      return next({status: 400, statusMessage: 'Title and Content is empty.'});
+      return next({ status: 400, statusMessage: 'Title and Content is empty.' });
     }
 
-    const {title, authorName, authorEmail, privacy, content} = post;
+    const { title, authorName, authorEmail, privacy, content } = post;
     await PostService.createPost(title, authorName, authorEmail, privacy, content, (err, result) => {
       if (err) return next(err);
       return res.send(result);

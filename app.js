@@ -1,20 +1,31 @@
 const createError = require('http-errors');
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+
+const config = require('./config');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const postRouter = require('./routes/posts');
 
 
-mongoose.connect(process.env.MONGODB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+mongoose.connect(config.database.connectionString, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
   .then(res => console.log(`Connect to DB succesfully.`))
   .catch(err => console.log(`Error in DB connection ${err}`));
 
 const app = express();
+const authService = require('./services/AuthService')
+
+app.use(session({
+  // TODO: move to config
+  secret: "random",
+  resave: true,
+  saveUninitialized: false,
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +37,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use(authService.router);
+// TODO: test
+// app.get('/', (req, res) => {
+//   const template = 'login';
+//   const userinfo = req.userContext && req.userContext.userinfo;
+//   res.render(template, {
+//     isLoggedIn: !!userinfo,
+//     userinfo: userinfo,
+//     baseUrl: webServerConfig.baseUrl,
+//   });
+// });
+
+app.use('/', authService.ensureAuthenticated(), indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postRouter);
 
@@ -44,6 +67,11 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+authService.on('ready', () => {
+  // eslint-disable-next-line no-console
+  app.listen(config.webServer.port, () => console.log(`App started on port ${config.webServer.port}`));
 });
 
 module.exports = app;

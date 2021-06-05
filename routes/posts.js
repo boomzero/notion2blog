@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const PostController = require('../controllers/post.controller')
+const authService = require('../services/AuthService');
+const PostController = require('../controllers/post.controller');
 
 /* GET users listing. */
-router.get('/all', PostController.apiGetAllPosts);
-router.get('/new', PostController.fetchNewPostForm);
-router.post('/new', PostController.apiCreatePosts);
+router.get('/', PostController.apiGetAllPosts);
+router.get('/new', authService.ensureAuthenticated(), PostController.fetchNewPostForm);
+router.post('/', authService.ensureAuthenticated(), PostController.apiCreatePosts);
 
 module.exports = router;
