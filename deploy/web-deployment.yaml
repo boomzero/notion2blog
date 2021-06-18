@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dailycookies
+  labels:
+    app: dailycookies
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dailycookies
+  template:
+    metadata:
+      labels:
+        app: dailycookies
+    spec:
+      containers:
+      - name: dailycookies
+        image: boomzero/dailycookies:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 250m
+            memory: 512Mi
+        ports:
+        - containerPort: 8080
+        env:
+          - name: ISSUER 
+            value: https://dev-75209517.okta.com/oauth2/default
+          - name: CLIENT_ID
+            value: 0oathen4jIui3fi5q5d6
+        envFrom:
+          - secretRef:
+              name: web-secret
+      imagePullSecrets:
+        - name: regcred
