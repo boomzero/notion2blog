@@ -25,14 +25,14 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${K8S_CLUSTER}
 
     - name: Set image tag
-      run: echo ${GITHUB_SHA} | head -c7 >> ${IMAGE_TAG}
+      run: echo "IMAGE_TAG=$(echo ${GITHUB_SHA} | head -c7)" >> $GITHUB_ENV
     - name: Build container image
-      run: docker build -t ${IMAGE}:${IMAGE_TAG} -t ${IMAGE}:latest .
+      run: docker build -t ${IMAGE}:${{ env.IMAGE_TAG }} -t ${IMAGE}:latest .
     - name: Push container image
       run: docker push ${IMAGE} --all-tags
 
     - name: Update deployment file
-      run: sed -i 's|${IMAGE}:latest|${IMAGE}:${IMAGE_TAG}|g' $GITHUB_WORKSPACE/deploy/web-deployment.yml
+      run: sed -i 's|${IMAGE}:latest|${IMAGE}:${{ env.IMAGE_TAG }}|g' $GITHUB_WORKSPACE/deploy/web-deployment.yml
     - name: Deploy to DigitalOcean Kubernetes
       run: kubectl -n ${K8S_NAMESPACE} apply -f $GITHUB_WORKSPACE/deploy/web-deployment.yml
     - name: Verify deployment
