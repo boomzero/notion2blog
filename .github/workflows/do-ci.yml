@@ -1,3 +1,5 @@
+name: CI DigitalOcean
+
 on:
   push:
     branches:
