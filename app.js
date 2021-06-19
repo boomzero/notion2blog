@@ -49,9 +49,10 @@ app.use(authService.router);
 //   });
 // });
 
-app.use('/', authService.ensureAuthenticated(), indexRouter);
+// app.use('/', authService.ensureAuthenticated(), indexRouter);
 app.use('/users', usersRouter);
-app.use('/posts', postRouter);
+// show posts by default
+app.use('/', postRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
