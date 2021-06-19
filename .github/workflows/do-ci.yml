@@ -3,17 +3,17 @@ name: CI DigitalOcean
 on:
   push:
     branches:
-      - main
+      - master
   
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout master
       uses: actions/checkout@main
-
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
-      run: echo "hello world"
-      # with:
-      #   token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
