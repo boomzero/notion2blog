@@ -7,3 +7,4 @@ public/
 .deploy*/
 *.env
 deploy/*secret*
+package-lock.json

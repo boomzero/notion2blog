@@ -36,6 +36,7 @@ jobs:
     - name: Push container image
       run: docker push ${IMAGE} --all-tags
 
+    # FIXME(phongvq): fix image tag replacement issue
     - name: Update deployment file
       run: sed -i 's|${IMAGE}:latest|${IMAGE}:${{ env.IMAGE_TAG }}|g' $GITHUB_WORKSPACE/deploy/web-deployment.yaml
     - name: Deploy to DigitalOcean Kubernetes
