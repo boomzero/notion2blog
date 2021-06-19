@@ -9,6 +9,8 @@ jobs:
   build:
     env:
       IMAGE: boomzero/dailycookies
+      K8S_CLUSTER: k8s-learning-dailycookies
+      K8S_NAMESPACE: dailycookies
 
     runs-on: ubuntu-latest
 
@@ -19,6 +21,19 @@ jobs:
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - name: Save DigitalOcean kubeconfig with short-lived credentials
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${K8S_CLUSTER}
 
+    - name: Set image tag
+      run: echo ${GITHUB_SHA} | head -c7 >> ${IMAGE_TAG}
     - name: Build container image
-      run: docker build -t ${IMAGE}:$(echo $GITHUB_SHA | head -c7) -t ${IMAGE}:latest .
+      run: docker build -t ${IMAGE}:${IMAGE_TAG} -t ${IMAGE}:latest .
+    - name: Push container image
+      run: docker push ${IMAGE} --all-tags
+
+    - name: Update deployment file
+      run: sed -i 's|${IMAGE}:latest|${IMAGE}:${IMAGE_TAG}|g' $GITHUB_WORKSPACE/deploy/web-deployment.yml
+    - name: Deploy to DigitalOcean Kubernetes
+      run: kubectl -n ${K8S_NAMESPACE} apply -f $GITHUB_WORKSPACE/deploy/web-deployment.yml
+    - name: Verify deployment
+      run: kubectl -n ${K8S_NAMESPACE} rollout status deployment/dailycookies
