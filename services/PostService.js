@@ -4,7 +4,9 @@ const Post = require('../models/Post');
 module.exports = class PostService {
   static async getAllPosts() {
     const posts = await Post.find();
-    posts.forEach(post => post['content'] = FileUtil.convertMarkdownToHTML(post['content']))
+    posts.forEach(async (post) => {
+      post['content_html'] = await FileUtil.convertMarkdownToHTML(post['content_markdown'])
+    })
 
     return posts;
   }
