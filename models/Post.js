@@ -8,9 +8,14 @@ const postSchema = schema({
     required: true,
     unique: true,
   },
-  content: {
+  content_html: {
     type: String,
     required: true,
+  },
+  content_markdown: {
+    type: String,
+    required: true,
+    default: "",
   },
   author_name: {
     type: String,
